@@ -133,7 +133,7 @@
 					<encoding>UTF-8</encoding>
 					<consoleOutput>true</consoleOutput>					
 					<failOnViolation>false</failOnViolation>  <!-- Apenas informativo -->
-					<failOnError>false</failOnError>  <!-- Apenas informativo -->
+					<failsOnError>false</failsOnError>  <!-- Apenas informativo -->
 				</configuration>
 			</plugin>
 		</plugins>
