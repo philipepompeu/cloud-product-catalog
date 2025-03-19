@@ -6,15 +6,18 @@ import org.springframework.stereotype.Service;
 
 import com.github.philipepompeu.cloud_product_catalog.application.dto.CategoryDto;
 import com.github.philipepompeu.cloud_product_catalog.domain.model.CategoryEntity;
+import com.github.philipepompeu.cloud_product_catalog.domain.observer.CatalogEventPublisher;
 import com.github.philipepompeu.cloud_product_catalog.domain.repository.CategoryRepository;
 
 @Service
 public class CategoryService {
 
     private final CategoryRepository repository;
-    
-    CategoryService(CategoryRepository repository){
+    private final CatalogEventPublisher catalogEventPublisher;
+
+    CategoryService(CategoryRepository repository, CatalogEventPublisher catalogEventPublisher){
         this.repository = repository;
+        this.catalogEventPublisher = catalogEventPublisher;
     }
 
     public CategoryDto saveCategory(CategoryDto dto){
@@ -23,6 +26,8 @@ public class CategoryService {
         CategoryEntity entity = CategoryEntity.fromDTO(dto);
 
         entity = this.repository.save(entity);
+
+        catalogEventPublisher.notifyListeners(entity.getOwnerId());
 
         return CategoryDto.fromEntity(entity);
 
@@ -40,7 +45,11 @@ public class CategoryService {
         entity.setDescription(dto.getDescription());
         entity.setTitle(dto.getTitle());
 
-        return CategoryDto.fromEntity(this.repository.save(entity));
+        entity = this.repository.save(entity);
+
+        catalogEventPublisher.notifyListeners(entity.getOwnerId());
+
+        return CategoryDto.fromEntity(entity);
     }
 
     public CategoryDto deleteCategory(String categoryId) throws Exception{
@@ -48,8 +57,15 @@ public class CategoryService {
 
         this.repository.delete(entity);
 
+        catalogEventPublisher.notifyListeners(entity.getOwnerId());
+
         return CategoryDto.fromEntity(entity);
 
+    }
+
+    public CategoryEntity getCategoryEntityById(String id){
+
+        return this.repository.findById(id).orElse(null);
     }
 
 }

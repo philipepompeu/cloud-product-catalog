@@ -1,5 +1,6 @@
 package com.github.philipepompeu.cloud_product_catalog.application.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.philipepompeu.cloud_product_catalog.domain.model.CategoryEntity;
 
 import lombok.AllArgsConstructor;
@@ -15,7 +16,8 @@ public class CategoryDto {
 
     private String id;
     private String title;    
-    private String description;    
+    private String description;
+    @JsonIgnore    
     private String ownerId;
 
     public static CategoryDto fromEntity(CategoryEntity entity){

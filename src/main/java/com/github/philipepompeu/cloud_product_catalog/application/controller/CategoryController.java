@@ -17,9 +17,12 @@ import com.github.philipepompeu.cloud_product_catalog.domain.service.CategorySer
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/categories")
+@Tag(name="Categories",
+     description="List, create, delete and update categories of your catalog.")
 public class CategoryController {
 
     private final CategoryService categoryService;
