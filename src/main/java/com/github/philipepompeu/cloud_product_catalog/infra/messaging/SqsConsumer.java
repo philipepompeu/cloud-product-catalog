@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.philipepompeu.cloud_product_catalog.application.dto.CatalogEventDto;
+import com.github.philipepompeu.cloud_product_catalog.domain.service.CatalogProcessor;
 
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.core.exception.SdkClientException;
@@ -29,13 +30,17 @@ public class SqsConsumer {
 
     private final String queueName;
     private final SqsClient sqsClient;
+    private final CatalogProcessor catalogProcessor;
     private String queueUrl; // A URL da fila será obtida na inicialização
     private final ObjectMapper objectMapper = new ObjectMapper();
     
-    SqsConsumer(@Value("${cloud.aws.sqs.queue-name}") String queueName, SqsClient sqsClient) throws SqsException, AwsServiceException, SdkClientException, Exception{
+    SqsConsumer(@Value("${cloud.aws.sqs.queue-name}") String queueName,
+                SqsClient sqsClient,
+                CatalogProcessor catalogProcessor) throws SqsException, AwsServiceException, SdkClientException, Exception{
         this.queueName = queueName;
         this.sqsClient = sqsClient;
         this.queueUrl = this.fetchQueueUrl();
+        this.catalogProcessor = catalogProcessor;
     }
 
     private String fetchQueueUrl() throws SqsException, AwsServiceException, SdkClientException, Exception {
@@ -91,7 +96,7 @@ public class SqsConsumer {
     }
 
     private void processCatalog(String ownerId){
-        System.out.println("Gerar o catalogo aqui para o owner = "+ ownerId);
+        catalogProcessor.process(ownerId);
     }
 
    

@@ -1,5 +1,7 @@
 package com.github.philipepompeu.cloud_product_catalog.application.dto;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.philipepompeu.cloud_product_catalog.domain.model.CategoryEntity;
 
@@ -20,8 +22,11 @@ public class CategoryDto {
     @JsonIgnore    
     private String ownerId;
 
+    @JsonIgnore
+    private List<ProductDto> products;
+
     public static CategoryDto fromEntity(CategoryEntity entity){
 
-        return new CategoryDto(entity.getId(), entity.getTitle(), entity.getDescription(), entity.getOwnerId());
+        return new CategoryDto(entity.getId(), entity.getTitle(), entity.getDescription(), entity.getOwnerId(), List.of());
     }
 }
