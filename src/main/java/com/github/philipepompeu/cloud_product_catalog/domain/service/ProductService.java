@@ -15,20 +15,23 @@ public class ProductService {
     private final ProductRepository repository;
     private final CategoryService categoryService;
     private final CatalogEventPublisher catalogEventPublisher;
+    private final OwnerIdManager ownerIdManager;
 
-    ProductService(ProductRepository repository, CategoryService categoryService, CatalogEventPublisher catalogEventPublisher){
+    ProductService(ProductRepository repository, CategoryService categoryService, CatalogEventPublisher catalogEventPublisher, OwnerIdManager ownerIdManager){
         this.repository = repository;
         this.categoryService = categoryService;
         this.catalogEventPublisher = catalogEventPublisher;
+        this.ownerIdManager = ownerIdManager;
     }
 
     public ProductDto createProduct(ProductDto dto){
 
         ProductEntity entity = ProductDto.toEntity(dto);
 
-        entity.setCategory(categoryService.getCategoryEntityById(dto.getCategoryId()));
+        entity.setCategoryId(dto.getCategoryId());
         
         entity.setId(null);
+        entity.setOwnerId(ownerIdManager.getOwnerId());
 
         entity = this.repository.save(entity);
         
@@ -44,7 +47,7 @@ public class ProductService {
         entity.setPrice(dto.getPrice());
         entity.setTitle(dto.getTitle());
         entity.setDescription(dto.getDescription());
-        entity.setCategory(categoryService.getCategoryEntityById(dto.getCategoryId()));
+        entity.setCategoryId(dto.getCategoryId());
 
         entity = repository.save(entity);
 

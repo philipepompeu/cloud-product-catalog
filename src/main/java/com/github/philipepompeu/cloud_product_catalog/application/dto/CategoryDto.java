@@ -3,6 +3,7 @@ package com.github.philipepompeu.cloud_product_catalog.application.dto;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.github.philipepompeu.cloud_product_catalog.domain.model.CategoryEntity;
 
 import lombok.AllArgsConstructor;
@@ -16,13 +17,18 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CategoryDto {
 
+    @JsonView(JsonViews.Default.class)
     private String id;
-    private String title;    
+    
+    @JsonView(JsonViews.Default.class)
+    private String title;
+    @JsonView(JsonViews.Default.class)
     private String description;
+
     @JsonIgnore    
     private String ownerId;
 
-    @JsonIgnore
+    @JsonView(JsonViews.Catalog.class) // Apenas para o catálogo!
     private List<ProductDto> products;
 
     public static CategoryDto fromEntity(CategoryEntity entity){

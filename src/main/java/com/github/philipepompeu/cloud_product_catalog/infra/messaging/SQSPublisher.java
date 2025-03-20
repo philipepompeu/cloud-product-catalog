@@ -22,10 +22,15 @@ public class SQSPublisher implements CatalogEventListener{
     private String queueUrl; // A URL da fila será obtida na inicialização
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public SQSPublisher(SqsClient sqsClient, @Value("${cloud.aws.sqs.queue-name}") String queueName) throws SqsException, AwsServiceException, SdkClientException, Exception {        
+    public SQSPublisher(SqsClient sqsClient, @Value("${cloud.aws.sqs.queue-name}") String queueName){        
         this.sqsClient = sqsClient;  
-        this.queueName = queueName;        
-        this.queueUrl = this.fetchQueueUrl();
+        this.queueName = queueName;  
+        
+        try {
+            this.queueUrl = this.fetchQueueUrl();            
+        } catch (Exception e) {
+            System.out.println(String.format("Fail to initialize SQSPublisher [ %s ]", e.getMessage() ));
+        }
     }
 
      private String fetchQueueUrl() throws SqsException, AwsServiceException, SdkClientException, Exception {
@@ -39,22 +44,26 @@ public class SQSPublisher implements CatalogEventListener{
 
     
     @Override
-    public void onCatalogUpdated(String ownerId) {        
+    public void onCatalogUpdated(String ownerId) {  
         
-        System.out.println(String.format("Catalog of ownerId[%s] updated. queueName=[%s]", ownerId, this.queueName));        
-        try {
-            String message = objectMapper.writeValueAsString(new CatalogEventDto(ownerId));
-            
-            SendMessageRequest sendMsgRequest = SendMessageRequest.builder()
-                    .queueUrl(queueUrl)
-                    .messageBody(message)
-                    .build();
-    
-            sqsClient.sendMessage(sendMsgRequest);
-            
-        } catch (JsonProcessingException e) {
-            System.out.println(e.getMessage());
+        if (queueUrl instanceof String) {
+
+            System.out.println(String.format("Catalog of ownerId[%s] updated. queueName=[%s]", ownerId, this.queueName));        
+            try {
+                String message = objectMapper.writeValueAsString(new CatalogEventDto(ownerId));
+                
+                SendMessageRequest sendMsgRequest = SendMessageRequest.builder()
+                        .queueUrl(queueUrl)
+                        .messageBody(message)
+                        .build();
+        
+                sqsClient.sendMessage(sendMsgRequest);
+                
+            } catch (JsonProcessingException e) {
+                System.out.println(e.getMessage());
+            }
         }
+        
 
     }
 

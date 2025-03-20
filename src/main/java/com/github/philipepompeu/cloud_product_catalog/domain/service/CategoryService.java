@@ -14,16 +14,19 @@ public class CategoryService {
 
     private final CategoryRepository repository;
     private final CatalogEventPublisher catalogEventPublisher;
+    private final OwnerIdManager ownerIdManager;
 
-    CategoryService(CategoryRepository repository, CatalogEventPublisher catalogEventPublisher){
+    CategoryService(CategoryRepository repository, CatalogEventPublisher catalogEventPublisher, OwnerIdManager ownerIdManager){
         this.repository = repository;
         this.catalogEventPublisher = catalogEventPublisher;
+        this.ownerIdManager = ownerIdManager;
     }
 
     public CategoryDto saveCategory(CategoryDto dto){
         dto.setId(null);
 
         CategoryEntity entity = CategoryEntity.fromDTO(dto);
+        entity.setOwnerId(ownerIdManager.getOwnerId());
 
         entity = this.repository.save(entity);
 
@@ -35,7 +38,7 @@ public class CategoryService {
 
     public List<CategoryDto> getAllCategories(){
         
-        return this.repository.findAll().stream().map(entity -> CategoryDto.fromEntity(entity)).toList();
+        return this.repository.findByOwnerId(ownerIdManager.getOwnerId()).orElse(List.of()).stream().map(entity -> CategoryDto.fromEntity(entity)).toList();
     }
 
     public CategoryDto updateCategory(CategoryDto dto) throws Exception{

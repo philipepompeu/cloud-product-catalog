@@ -36,11 +36,17 @@ public class SqsConsumer {
     
     SqsConsumer(@Value("${cloud.aws.sqs.queue-name}") String queueName,
                 SqsClient sqsClient,
-                CatalogProcessor catalogProcessor) throws SqsException, AwsServiceException, SdkClientException, Exception{
+                CatalogProcessor catalogProcessor){
         this.queueName = queueName;
         this.sqsClient = sqsClient;
-        this.queueUrl = this.fetchQueueUrl();
         this.catalogProcessor = catalogProcessor;
+
+        try {
+            this.queueUrl = this.fetchQueueUrl();
+        } catch (Exception e) {
+            System.out.println(String.format("Fail to initialize SqsConsumer [ %s ]", e.getMessage() ));
+        }
+        
     }
 
     private String fetchQueueUrl() throws SqsException, AwsServiceException, SdkClientException, Exception {
@@ -55,33 +61,41 @@ public class SqsConsumer {
     @Scheduled(fixedDelay = 9000)
     public void receiveMessages(){
 
-        ReceiveMessageRequest request = ReceiveMessageRequest.builder()
-                .queueUrl(queueUrl)
-                .maxNumberOfMessages(MAX_NUMBER_OF_MESSAGES)
-                .waitTimeSeconds(WAIT_TIME_SECONDS)  // Long polling
-                .build();        
 
-        List<Message> messages = sqsClient.receiveMessage(request).messages();
-        
-        Map<String, List<CatalogEventDto>> messagesGroupByOwner = messages.stream().map(message -> {
-                                                                                        try {
-                                                                                            return this.objectMapper.readValue(message.body(), CatalogEventDto.class);
-                                                                                        } catch (Exception e) {
-                                                                                            return null;                                                
-                                                                                        }
-                                                                                    }).filter(event -> event != null) // Remove os null antes de agrupar
-                                                                                    .collect(Collectors.groupingBy(CatalogEventDto::getOwnerId));
-                                                    
-        messagesGroupByOwner.forEach((ownerId, messagesOfTheOwner) -> {
-            System.out.println("Processando catálogo para ownerId: " + ownerId);
+        if (queueUrl instanceof String) {
             
-            // Chamar o método que processa o catálogo para esse ownerId
-            this.processCatalog(ownerId);            
-        });
-        
-        for (Message message : (Iterable<Message>) messages.stream()::iterator) {
-            System.out.println("Mensagem sendo deletada -> " + message.body());
-            this.deleteMessage(message);
+            ReceiveMessageRequest request = ReceiveMessageRequest.builder()
+                    .queueUrl(queueUrl)
+                    .maxNumberOfMessages(MAX_NUMBER_OF_MESSAGES)
+                    .waitTimeSeconds(WAIT_TIME_SECONDS)  // Long polling
+                    .build();        
+
+            List<Message> messages = sqsClient.receiveMessage(request).messages();
+
+            if (messages.size() > 0) {
+                
+                Map<String, List<CatalogEventDto>> messagesGroupByOwner = messages.stream().map(message -> {
+                                                                                                try {
+                                                                                                    return this.objectMapper.readValue(message.body(), CatalogEventDto.class);
+                                                                                                } catch (Exception e) {
+                                                                                                    return null;                                                
+                                                                                                }
+                                                                                            }).filter(event -> event != null && event.getOwnerId() != null) // Remove os null antes de agrupar
+                                                                                            .collect(Collectors.groupingBy(CatalogEventDto::getOwnerId));
+                                                            
+                messagesGroupByOwner.forEach((ownerId, messagesOfTheOwner) -> {
+                    System.out.println("Processando catálogo para ownerId: " + ownerId);
+                    
+                    // Chamar o método que processa o catálogo para esse ownerId
+                    this.processCatalog(ownerId);            
+                });
+                
+                for (Message message : (Iterable<Message>) messages.stream()::iterator) {
+                    System.out.println("Mensagem sendo deletada -> " + message.body());
+                    this.deleteMessage(message);
+                }
+            }
+            
         }
         
     }

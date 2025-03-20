@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,7 +62,7 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a category of the given id")
     @ApiResponse(responseCode = "200", description = "Category deleted.")
-    public ResponseEntity<CategoryDto> deleteCategory(@RequestParam(name="id") String categoryId){
+    public ResponseEntity<CategoryDto> deleteCategory(@PathVariable(name="id") String categoryId){
 
         try {
             return ResponseEntity.ok().body(categoryService.deleteCategory(categoryId));    

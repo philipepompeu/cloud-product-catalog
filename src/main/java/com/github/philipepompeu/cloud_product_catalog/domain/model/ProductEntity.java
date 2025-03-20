@@ -20,7 +20,7 @@ public class ProductEntity {
     private String title;
     private String description;
     private BigDecimal price;
-    private CategoryEntity category;    
+    private String categoryId;    
     private String ownerId;
     
     public ProductEntity() {
@@ -33,9 +33,7 @@ public class ProductEntity {
         dto.setTitle(entity.getTitle());
         dto.setDescription(entity.getDescription() );
         dto.setPrice(entity.getPrice() );
-        if (entity.getCategory() != null) {
-            dto.setCategoryId(entity.getCategory().getId() );            
-        }
+        dto.setCategoryId(entity.getCategoryId());
         dto.setOwnerId(entity.getOwnerId());
         dto.setId(entity.getId());
         
