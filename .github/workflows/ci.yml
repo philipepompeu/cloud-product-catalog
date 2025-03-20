@@ -16,6 +16,13 @@ jobs:
         image: localstack/localstack
         ports:
           - 4566:4566
+      mongo:
+        image: mongo:latest
+        
+        ports:
+          - "27017:27017"
+        env:
+          MONGO_INITDB_DATABASE: cloud-product-catalog        
     env:
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test

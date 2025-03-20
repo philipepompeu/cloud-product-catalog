@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 
 import com.github.philipepompeu.cloud_product_catalog.application.dto.CategoryDto;
 
-//@DataMongoTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DisplayName("Test E2E of the endpoint /categories")
 public class CategoryControllerTest {     
