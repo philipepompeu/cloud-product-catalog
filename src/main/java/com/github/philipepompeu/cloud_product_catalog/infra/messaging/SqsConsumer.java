@@ -2,6 +2,7 @@ package com.github.philipepompeu.cloud_product_catalog.infra.messaging;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -73,14 +74,16 @@ public class SqsConsumer {
             List<Message> messages = sqsClient.receiveMessage(request).messages();
 
             if (messages.size() > 0) {
+                Function<Message, CatalogEventDto> dtoConverter = message -> {
+                    try {
+                        return this.objectMapper.readValue(message.body(), CatalogEventDto.class);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                };
                 
-                Map<String, List<CatalogEventDto>> messagesGroupByOwner = messages.stream().map(message -> {
-                                                                                                try {
-                                                                                                    return this.objectMapper.readValue(message.body(), CatalogEventDto.class);
-                                                                                                } catch (Exception e) {
-                                                                                                    return null;                                                
-                                                                                                }
-                                                                                            }).filter(event -> event != null && event.getOwnerId() != null) // Remove os null antes de agrupar
+                Map<String, List<CatalogEventDto>> messagesGroupByOwner = messages.stream().map(dtoConverter)
+                                                                                            .filter(event -> event != null && event.getOwnerId() != null) // Remove os null antes de agrupar
                                                                                             .collect(Collectors.groupingBy(CatalogEventDto::getOwnerId));
                                                             
                 messagesGroupByOwner.forEach((ownerId, messagesOfTheOwner) -> {

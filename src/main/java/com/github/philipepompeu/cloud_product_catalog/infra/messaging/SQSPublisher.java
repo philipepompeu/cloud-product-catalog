@@ -33,12 +33,13 @@ public class SQSPublisher implements CatalogEventListener{
         }
     }
 
-     private String fetchQueueUrl() throws SqsException, AwsServiceException, SdkClientException, Exception {
+    private String fetchQueueUrl() throws SqsException, AwsServiceException, SdkClientException, Exception {
         return sqsClient.listQueues()
                         .queueUrls()
                         .stream()
                         .filter(url -> url.contains(this.queueName))
-                        .findFirst().orElseThrow(() -> new Exception("Invalid queue name."));        
+                        .findFirst()
+                        .orElseThrow(() -> new Exception("Invalid queue name."));        
         
     }
 

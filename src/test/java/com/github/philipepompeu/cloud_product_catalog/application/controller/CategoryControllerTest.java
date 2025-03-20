@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -25,7 +24,7 @@ import com.github.philipepompeu.cloud_product_catalog.application.dto.CategoryDt
 
 //@DataMongoTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CategoryControllerTest {
+public class CategoryControllerTest {     
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -91,7 +90,7 @@ public class CategoryControllerTest {
 
     @Test
     @DisplayName("should responde <200> after updating the category")
-    void shouldUpdateTheCategoryCreated(){
+    void shouldUpdateTheCategory(){
 
         CategoryDto dto = new CategoryDto();
 
@@ -117,7 +116,7 @@ public class CategoryControllerTest {
     
     @Test
     @DisplayName("should responde <200> after delete the category")
-    void shouldDeleteTheCategoryCreated(){
+    void shouldDeleteTheCategory(){
 
         CategoryDto dto = new CategoryDto();
 
@@ -143,7 +142,7 @@ public class CategoryControllerTest {
     }
     
     @Test
-    @DisplayName("should responde <200> with a list of categories")
+    @DisplayName("should responde <200> with a list of categories")    
     void shouldListAllTheCategories(){
 
         CategoryDto dto = new CategoryDto();

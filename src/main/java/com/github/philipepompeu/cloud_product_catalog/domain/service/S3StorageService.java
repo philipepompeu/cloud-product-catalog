@@ -33,6 +33,6 @@ public class S3StorageService implements StorageService{
 
         s3Client.putObject(putRequest, 
             software.amazon.awssdk.core.sync.RequestBody.fromBytes(jsonCatalog.getBytes(StandardCharsets.UTF_8)));
-        }
+    }
 
 }
