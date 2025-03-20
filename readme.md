@@ -120,8 +120,3 @@ mvn verify
 
 ---
 
-📌 **Repository:** [GitHub - Cloud Product Catalog](https://github.com/philipepompeu/cloud-product-catalog)  
-📧 **Author:** [Philipe Pompeu](https://github.com/philipepompeu)
-
-🚀 **Feel free to contribute or give feedback!**
-
