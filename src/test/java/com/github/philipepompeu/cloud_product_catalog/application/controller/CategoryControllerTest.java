@@ -24,6 +24,7 @@ import com.github.philipepompeu.cloud_product_catalog.application.dto.CategoryDt
 
 //@DataMongoTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DisplayName("Test E2E of the endpoint /categories")
 public class CategoryControllerTest {     
 
     @Autowired
