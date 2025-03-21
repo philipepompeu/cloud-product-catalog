@@ -35,7 +35,7 @@ public class SqsConsumer {
     private String queueUrl; // A URL da fila será obtida na inicialização
     private final ObjectMapper objectMapper = new ObjectMapper();
     
-    SqsConsumer(@Value("${cloud.aws.sqs.queue-name}") String queueName,
+    public SqsConsumer(@Value("${cloud.aws.sqs.queue-name}") String queueName,
                 SqsClient sqsClient,
                 CatalogProcessor catalogProcessor){
         this.queueName = queueName;
@@ -115,6 +115,10 @@ public class SqsConsumer {
     private void processCatalog(String ownerId){
         catalogProcessor.process(ownerId);
     }
+
+
+    public String getQueueUrl(){ return this.queueUrl; }
+
 
    
 
