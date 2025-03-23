@@ -13,13 +13,13 @@ import com.github.philipepompeu.cloud_product_catalog.domain.repository.ProductR
 public class ProductService {
 
     private final ProductRepository repository;
-    private final CategoryService categoryService;
+    
     private final CatalogEventPublisher catalogEventPublisher;
     private final OwnerIdManager ownerIdManager;
 
-    ProductService(ProductRepository repository, CategoryService categoryService, CatalogEventPublisher catalogEventPublisher, OwnerIdManager ownerIdManager){
+    ProductService(ProductRepository repository, CatalogEventPublisher catalogEventPublisher, OwnerIdManager ownerIdManager){
         this.repository = repository;
-        this.categoryService = categoryService;
+        
         this.catalogEventPublisher = catalogEventPublisher;
         this.ownerIdManager = ownerIdManager;
     }

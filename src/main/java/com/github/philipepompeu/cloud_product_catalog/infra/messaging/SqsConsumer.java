@@ -57,7 +57,7 @@ public class SqsConsumer {
         
     }
 
-    @Scheduled(fixedDelay = 9000)
+    @Scheduled(fixedDelayString = "${scheduler.queue.consumer.delay}")
     public void receiveMessages(){
 
 

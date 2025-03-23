@@ -28,7 +28,7 @@ public class CategoryDto {
     @JsonIgnore    
     private String ownerId;
 
-    @JsonView(JsonViews.Catalog.class) // Apenas para o cat·logo!
+    @JsonView(JsonViews.Catalog.class) // Apenas para o cat√°logo!
     private List<ProductDto> products;
 
     public static CategoryDto fromEntity(CategoryEntity entity){

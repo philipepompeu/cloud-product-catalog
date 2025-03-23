@@ -134,8 +134,8 @@
 					<configLocation>checkstyle.xml</configLocation>
 					<encoding>UTF-8</encoding>
 					<consoleOutput>true</consoleOutput>					
-					<failOnViolation>false</failOnViolation>  <!-- Apenas informativo -->
-					<failsOnError>false</failsOnError>  <!-- Apenas informativo -->
+					<failOnViolation>true</failOnViolation>
+					<failsOnError>true</failsOnError>
 				</configuration>
 			</plugin>
 		</plugins>
