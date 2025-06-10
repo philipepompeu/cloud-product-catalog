@@ -1,0 +1,16 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongodb_catalog
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: cloud-product-catalog
+    restart: unless-stopped
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3,sqs
+      - DEFAULT_REGION=us-east-1
